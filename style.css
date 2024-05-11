@@ -1,0 +1,77 @@
+html {
+	font-family: Arial, sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	margin: 0;
+	background-color: rgb(83, 157, 157);
+	scroll-behavior: smooth;
+}
+
+.header {
+	display: flex;
+	flex-direction: column;
+	align-content: center;
+}
+
+.title {
+	font-size: 60px;
+	margin: 0 auto;
+	padding: 30px 0;
+}
+.logo {
+	width: 240px;
+	aspect-ratio: 1/1;
+	margin: 0 auto;
+	border-radius: 25%;
+	border: solid black 5px;
+	background-size: cover;
+	background-image: url(images/logo1.png);
+}
+
+.balanceinfo {
+	font-size: 30px;
+	font-weight: 700;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+.column {
+	padding: 10px;
+	border: solid black 5px;
+}
+
+input[type="text"],
+input[type="number"] {
+	margin-bottom: 10px;
+	padding: 5px;
+}
+button {
+	padding: 5px 10px;
+	cursor: pointer;
+}
+.transaction {
+	margin-bottom: 5px;
+	padding: 5px;
+	border: 1px solid #ccc;
+}
+.section {
+	margin-top: 20px;
+	display: flex;
+}
+.section .column {
+	flex: 1;
+	margin: 0 25px 30px 25px;
+}
+.section-header {
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+.income {
+	background-color: #6dd76d;
+}
+.expense {
+	background-color: #c65656;
+}
+.total {
+	font-weight: bold;
+}
