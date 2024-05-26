@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,39 +9,86 @@
 	</head>
 	<body>
 		<div class="header">
-			<h2 class="title">Domowy Budżet</h2>
+			<h1 class="title">Domowy Budżet</h1>
 			<div class="logo"></div>
-			<div id="balance" class="balanceinfo"></div>
+			<div id="balance" class="balance-info"></div>
 		</div>
 
 		<div class="section">
 			<div class="column income">
 				<div class="section-header">Przychody</div>
-				<div>
-					<label for="incomeName">Nazwa:</label>
-					<input type="text" id="incomeName" />
-				</div>
-				<div>
-					<label for="incomeAmount">Kwota (PLN):</label>
-					<input type="number" id="incomeAmount" />
-				</div>
-				<button onclick="addIncome()">Dodaj przychód</button>
+				<form id="incomeForm">
+					<div>
+						<label for="incomeName">Nazwa:</label>
+						<input type="text" id="incomeName" name="name" class="text-input" />
+						<span id="incomeNameError" class="error"></span>
+					</div>
+					<div>
+						<label for="incomeAmount">Kwota (PLN):</label>
+						<input
+							type="number"
+							id="incomeAmount"
+							name="amount"
+							class="number-input"
+						/>
+						<span id="incomeAmountError" class="error"></span>
+					</div>
+					<button type="submit" class="submit-button">Dodaj przychód</button>
+				</form>
 				<div id="incomeList"></div>
 				<div id="totalIncome" class="total"></div>
 			</div>
 			<div class="column expense">
 				<div class="section-header">Wydatki</div>
-				<div>
-					<label for="expenseName">Nazwa:</label>
-					<input type="text" id="expenseName" />
-				</div>
-				<div>
-					<label for="expenseAmount">Kwota (PLN):</label>
-					<input type="number" id="expenseAmount" />
-				</div>
-				<button onclick="addExpense()">Dodaj wydatek</button>
+				<form id="expenseForm">
+					<div>
+						<label for="expenseName">Nazwa:</label>
+						<input
+							type="text"
+							id="expenseName"
+							name="name"
+							class="text-input"
+						/>
+						<span id="expenseNameError" class="error"></span>
+					</div>
+					<div>
+						<label for="expenseAmount">Kwota (PLN):</label>
+						<input
+							type="number"
+							id="expenseAmount"
+							name="amount"
+							class="number-input"
+						/>
+						<span id="expenseAmountError" class="error"></span>
+					</div>
+					<button type="submit" class="submit-button">Dodaj wydatek</button>
+				</form>
 				<div id="expenseList"></div>
 				<div id="totalExpense" class="total"></div>
+			</div>
+		</div>
+
+		<div id="editModal" class="modal">
+			<div class="modal-content">
+				<span class="close-button">&times;</span>
+				<form id="editForm">
+					<div>
+						<label for="editName">Nazwa:</label>
+						<input type="text" id="editName" name="name" class="text-input" />
+						<span id="editNameError" class="error"></span>
+					</div>
+					<div>
+						<label for="editAmount">Kwota (PLN):</label>
+						<input
+							type="number"
+							id="editAmount"
+							name="amount"
+							class="number-input"
+						/>
+						<span id="editAmountError" class="error"></span>
+					</div>
+					<button type="submit" class="submit-button">Zapisz zmiany</button>
+				</form>
 			</div>
 		</div>
 

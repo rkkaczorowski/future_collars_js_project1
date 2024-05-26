@@ -1,11 +1,52 @@
 let transactions = [];
+let editIndex = null;
 
-function addIncome() {
-	const name = document.getElementById("incomeName").value.trim();
-	const amount = parseFloat(document.getElementById("incomeAmount").value);
+document
+	.getElementById("incomeForm")
+	.addEventListener("submit", function (event) {
+		event.preventDefault();
+		addIncome(event);
+	});
 
-	if (!name || isNaN(amount)) {
-		alert("Proszę podać poprawną nazwę i kwotę przychodu.");
+document
+	.getElementById("expenseForm")
+	.addEventListener("submit", function (event) {
+		event.preventDefault();
+		addExpense(event);
+	});
+
+document
+	.getElementById("editForm")
+	.addEventListener("submit", function (event) {
+		event.preventDefault();
+		saveEdit(event);
+	});
+
+document.querySelector(".close-button").addEventListener("click", closeModal);
+
+function addIncome(event) {
+	const name = event.target.name.value.trim();
+	const amount = parseFloat(event.target.amount.value);
+
+	const nameError = document.getElementById("incomeNameError");
+	const amountError = document.getElementById("incomeAmountError");
+
+	nameError.textContent = "";
+	amountError.textContent = "";
+
+	let valid = true;
+
+	if (!name) {
+		nameError.textContent = "Proszę podać nazwę przychodu.";
+		valid = false;
+	}
+
+	if (isNaN(amount) || amount <= 0) {
+		amountError.textContent = "Proszę podać poprawną kwotę przychodu.";
+		valid = false;
+	}
+
+	if (!valid) {
 		return;
 	}
 
@@ -13,15 +54,32 @@ function addIncome() {
 	transactions.push(transaction);
 	displayTransactions();
 	updateBalance();
-	clearIncomeInputs();
+	event.target.reset();
 }
 
-function addExpense() {
-	const name = document.getElementById("expenseName").value.trim();
-	const amount = parseFloat(document.getElementById("expenseAmount").value);
+function addExpense(event) {
+	const name = event.target.name.value.trim();
+	const amount = parseFloat(event.target.amount.value);
 
-	if (!name || isNaN(amount)) {
-		alert("Proszę podać poprawną nazwę i kwotę wydatku.");
+	const nameError = document.getElementById("expenseNameError");
+	const amountError = document.getElementById("expenseAmountError");
+
+	nameError.textContent = "";
+	amountError.textContent = "";
+
+	let valid = true;
+
+	if (!name) {
+		nameError.textContent = "Proszę podać nazwę wydatku.";
+		valid = false;
+	}
+
+	if (isNaN(amount) || amount <= 0) {
+		amountError.textContent = "Proszę podać poprawną kwotę wydatku.";
+		valid = false;
+	}
+
+	if (!valid) {
 		return;
 	}
 
@@ -29,7 +87,7 @@ function addExpense() {
 	transactions.push(transaction);
 	displayTransactions();
 	updateBalance();
-	clearExpenseInputs();
+	event.target.reset();
 }
 
 function displayTransactions() {
@@ -47,13 +105,27 @@ function displayTransactions() {
 	transactions.forEach((transaction, index) => {
 		const transactionDiv = document.createElement("div");
 		transactionDiv.classList.add("transaction");
-		transactionDiv.innerHTML = `<strong>${
-			transaction.name
-		}</strong> - ${transaction.amount.toFixed(
-			2
-		)} PLN <button onclick="editTransaction(${index}, '${
-			transaction.type
-		}')">Edytuj</button> <button onclick="deleteTransaction(${index})">Usuń</button>`;
+
+		const nameElement = document.createElement("strong");
+		nameElement.textContent = transaction.name;
+
+		const amountElement = document.createElement("span");
+		amountElement.textContent = ` - ${transaction.amount.toFixed(2)} PLN`;
+
+		const editButton = document.createElement("button");
+		editButton.textContent = "Edytuj";
+		editButton.addEventListener("click", () =>
+			openEditModal(index, transaction)
+		);
+
+		const deleteButton = document.createElement("button");
+		deleteButton.textContent = "Usuń";
+		deleteButton.addEventListener("click", () => deleteTransaction(index));
+
+		transactionDiv.appendChild(nameElement);
+		transactionDiv.appendChild(amountElement);
+		transactionDiv.appendChild(editButton);
+		transactionDiv.appendChild(deleteButton);
 
 		if (transaction.type === "income") {
 			incomesElement.appendChild(transactionDiv);
@@ -72,19 +144,53 @@ function displayTransactions() {
 	)} PLN`;
 }
 
-function editTransaction(index, type) {
-	const newName = prompt("Proszę podać nową nazwę transakcji:");
-	const newAmount = parseFloat(prompt("Proszę podać nową kwotę transakcji:"));
+function openEditModal(index, transaction) {
+	editIndex = index;
+	const editModal = document.getElementById("editModal");
+	const editForm = document.getElementById("editForm");
+	const editNameInput = document.getElementById("editName");
+	const editAmountInput = document.getElementById("editAmount");
 
-	if (!newName || isNaN(newAmount)) {
-		alert("Proszę podać poprawną nazwę i kwotę transakcji.");
+	editNameInput.value = transaction.name;
+	editAmountInput.value = transaction.amount;
+
+	editModal.style.display = "block";
+
+	editForm.addEventListener("reset", closeModal);
+}
+
+function saveEdit(event) {
+	const name = event.target.name.value.trim();
+	const amount = parseFloat(event.target.amount.value);
+
+	const nameError = document.getElementById("editNameError");
+	const amountError = document.getElementById("editAmountError");
+
+	nameError.textContent = "";
+	amountError.textContent = "";
+
+	let valid = true;
+
+	if (!name) {
+		nameError.textContent = "Proszę podać nazwę transakcji.";
+		valid = false;
+	}
+
+	if (isNaN(amount) || amount <= 0) {
+		amountError.textContent = "Proszę podać poprawną kwotę transakcji.";
+		valid = false;
+	}
+
+	if (!valid) {
 		return;
 	}
 
-	transactions[index].name = newName.trim();
-	transactions[index].amount = newAmount;
+	transactions[editIndex].name = name;
+	transactions[editIndex].amount = amount;
+
 	displayTransactions();
 	updateBalance();
+	closeModal();
 }
 
 function deleteTransaction(index) {
@@ -117,12 +223,14 @@ function updateBalance() {
 	}
 }
 
-function clearIncomeInputs() {
-	document.getElementById("incomeName").value = "";
-	document.getElementById("incomeAmount").value = "";
-}
+function closeModal() {
+	const editModal = document.getElementById("editModal");
+	const editForm = document.getElementById("editForm");
+	const editNameError = document.getElementById("editNameError");
+	const editAmountError = document.getElementById("editAmountError");
 
-function clearExpenseInputs() {
-	document.getElementById("expenseName").value = "";
-	document.getElementById("expenseAmount").value = "";
+	editForm.reset();
+	editNameError.textContent = "";
+	editAmountError.textContent = "";
+	editModal.style.display = "none";
 }
