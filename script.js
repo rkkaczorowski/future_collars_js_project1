@@ -1,4 +1,4 @@
-let transactions = [];
+const transactions = [];
 let editIndex = null;
 
 document
